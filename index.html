@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Phaser UI Kit</title>
+	<style>
+		html, body {
+		    height: 100%;
+		    margin: 0;
+		    overflow: hidden;
+		}
+		
+		#game-div {
+			height: 100%;
+			width: 100%;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div id="game-div"></div>
+	</div>
+	
+	<script src="js/phaser.min.js"></script>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/modal.js"></script>
+
+	<script>
+	
+		var w = $(window).width();
+		var h = $(window).height();
+	
+		var game = new Phaser.Game(w, h, Phaser.SHOW_ALL, 'game-div', { preload: preload, create: create });
+		var reg = {};
+
+		function preload() {
+			game.load.image('bg', 'img/background-tile1.png');
+			game.load.image('button1', 'img/button1.png');
+			game.load.image('button2', 'img/button2.png');
+			game.load.image('button3', 'img/button3.png');
+			game.load.image('button_modal', 'img/button-modal.png');
+			game.load.spritesheet('loading', 'img/loading-bar1.png', 261, 50.75);
+		}
+
+		function create() {
+			init();
+		}
+		
+		function init() {
+			game.world.removeAll();
+			var start_bg_el = game.add.tileSprite(0, 0, w, h, 'bg');
+			var btn1 = game.add.button(100, 100, 'button1', buttonHandler, this);
+			var btn2 = game.add.button(100, 200, 'button2', buttonHandler, this);
+			var btn3 = game.add.button(100, 300, 'button3', buttonHandler, this);
+			var loading = game.add.sprite(100, 500, 'loading');
+
+			loading.animations.add('loading', [0, 1, 2, 3, 4, 5, 6, 7]);
+			loading.animations.play('loading', 20, true);
+			loading.animations.currentAnim.speed = 5;
+			
+			reg.modal = new gameModal(game);
+			var button_modal = this.game.add.button(100, 400, "button_modal", showModal1);
+			reg.modal.createModal({
+				type:"modal1",
+				includeBackground: true,
+				modalCloseOnInput: true,
+				itemsArr: [
+					{
+						type: "text",
+						content: "Lorem Ipsum Dolor",
+						fontFamily: "Arial",
+						fontSize: 38,
+						color: "0xFFFFFF",
+						offsetY: -50,
+					}
+				]
+			});
+		}
+		
+		function showModal1() {
+			reg.modal.showModal("modal1");
+		}
+		
+		function buttonHandler() {
+			alert("Button Clicked");
+		}
+	</script>
+</body>
+</html>
